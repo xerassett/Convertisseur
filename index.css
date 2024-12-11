@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.containers {
+    display: flex;
+    justify-content: center;
+}
+
+#mini-container {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    color: rgb(177, 0, 0);
+    font-size: 14px;
+}
+
+select {
+    background-color: white;
+    border-color: gray;
+    width: 400px;
+    height: 50px;
+}
+
+hr {
+    width: 40%;
+    color: gray;
+}
