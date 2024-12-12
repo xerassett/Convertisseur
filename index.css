@@ -11,6 +11,11 @@ h1 {
 .containers {
     display: flex;
     justify-content: center;
+    gap: 50px;
+}
+
+.containers:nth-of-type(2) {
+    margin-top: 30px;
 }
 
 #mini-container {
@@ -25,12 +30,65 @@ label {
 
 select {
     background-color: white;
-    border-color: gray;
     width: 400px;
     height: 50px;
 }
 
 hr {
+    margin-top: 50px;
     width: 40%;
     color: gray;
+}
+
+.container-saisie {
+    display: flex;
+    flex-direction: column;
+}
+
+#fleche {
+    padding-top: 25px;
+    width: 70px;
+    height: 70px;
+}
+
+.container-unite {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+#submit-container {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#button {
+    width: 200px;
+    height: 35px;
+    border-radius: 10px;
+    color: white;
+    background-color: rgb(185, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+#button:hover {
+    color: gray;
+    background-color: rgb(134, 0, 0);
+}
+
+.containers a:nth-of-type(2) {
+    display: flex;
+    justify-content: center;
+    color: rgb(185, 0, 0);
+    text-decoration: none;
+}
+
+.containers a:nth-of-type(2):hover {
+    text-decoration: underline;
 }
