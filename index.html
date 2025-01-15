@@ -30,7 +30,7 @@
             </div>
             <div class="container-unite">
                 <label>Sélection de la grandeur physique : </label>
-                <select>
+                <select id="grandeur1">
                     
                 </select>
             </div>
@@ -43,7 +43,7 @@
             </div>
             <div class="container-unite">
                 <label>Sélection de la grandeur physique : </label>
-                <select>
+                <select id="grandeur2">
                     
                 </select>
             </div>
@@ -56,6 +56,84 @@
         </div>
     </div>
     <script>
+         const unitesDisponibles = {
+            Température: ["Celsius", "Fahrenheit", "Kelvin"],
+            Distance: ["Kilomètres", "Mètres", "Centimètres", "Millimètres", "Micromètres", "Nanomètres", "Mile", "Pied", "Pouce"],
+            Volume: ["Litres", "Millilitres", "Gallons"],
+            Masse: ["Grammes", "Kilogrammes", "Livres"],
+            Temps: ["Secondes", "Minutes", "Heures"],
+            "Date Byte": ["Bytes", "Kilobytes", "Megabytes", "Gigabytes"]
+            };
+        function unites(grandeur) {
+            const selectUniteDepart = document.querySelectorAll("select")[1];
+            const selectUniteArrivee = document.querySelectorAll("select")[2];
+            unitesDisponibles[grandeur].forEach(unite => {
+                const optionDepart = document.createElement("option");
+                const optionArrivee = document.createElement("option");
+                
+                optionDepart.textContent = unite;
+                optionArrivee.textContent = unite;
+            
+                selectUniteDepart.appendChild(optionDepart);
+                selectUniteArrivee.appendChild(optionArrivee);
+            });
+        }
+        function conversion(grandeur, uniteDepart, uniteArriver, valeur) {
+            switch(grandeur) {
+                case "Température":
+                    return conversionTemp(valeur, uniteDepart, uniteArriver);
+                case "Distance":
+                    return conversionDist(valeur, uniteDepart, uniteArriver);
+                case "Volume":
+                    return conversionVol(valeur, uniteDepart, uniteArriver);
+                case "Masse":
+                    return conversionMasse(valeur, uniteDepart, uniteArriver);
+                case "Temps":
+                    return conversionTemps(valeur, uniteDepart, uniteArriver);
+                case "Data Byte":
+                    return conversionData(valeur, uniteDepart, uniteArriver);
+                default:
+                    throw new Error("Grandeur non supportée.");
+            }
+        }
+        function conversionTemp(valeur, uniteDepart, uniteArriver) {
+            if(uniteDepart === "Celsius" && uniteArriver === "Fahrenheit") {
+                return (valeur - 26)/2;
+            } else if (uniteDepart === "Fahrenheit" && uniteArriver === "Celsius") {
+                return (valeur - 32)/1.8;
+            }  else if (uniteDepart === "Celsius" && uniteArriver === "Kelvin") {
+                return valeur + 273,15;
+            } else if (uniteDepart === "Kelvin" && uniteArriver === "Celsius") {
+                return valeur - 273,15;
+            } else if (uniteDepart === "Fahrenheit" && uniteArriver === "Kelvin") {
+                return (valeur - 32) * 5/9 + 273,15;
+            } else if (uniteDepart === "Kelvin" && uniteArriver === "Fahrenheit") {
+                return (valeur - 273.15) * 9/5 + 32;
+            } else {
+                throw new Error("Conversion non supportée entre ces unités.");
+            }
+        }
+        function conversionDist(valeur, uniteDepart, uniteArriver) {
+            const mesures = {
+                "Kilomètres": 1000,          
+                "Mètres": 1,                
+                "Centimètres": 0.01,         
+                "Millimètres": 0.001,      
+                "Micromètres": 0.000001,    
+                "Nanomètres": 0.000000001,   
+                "Miles": 1609.34,           
+                "Pieds": 0.3048,             
+                "Pouces": 0.0254             
+            }
+            for (const mesure in mesures) {
+                if(uniteArriver === mesure) {
+                    return valeur * mesures[mesure];
+                } else {
+                    throw new Error("Erreur dans la conversion");
+                }      
+            }
+        }
+        
       
     </script>
 </body>
