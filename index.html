@@ -56,30 +56,58 @@
         </div>
     </div>
     <script>
-         const unitesDisponibles = {
+        const unitesDisponibles = {
             Température: ["Celsius", "Fahrenheit", "Kelvin"],
-            Distance: ["Kilomètres", "Mètres", "Centimètres", "Millimètres", "Micromètres", "Nanomètres", "Mile", "Pied", "Pouce"],
+            Distance: ["Kilomètres", "Mètres", "Centimètres", "Millimètres", "Micromètres", "Nanomètres", "Miles", "Pieds", "Pouces"],
             Volume: ["Litres", "Millilitres", "Gallons"],
             Masse: ["Grammes", "Kilogrammes", "Livres"],
             Temps: ["Secondes", "Minutes", "Heures"],
             "Date Byte": ["Bytes", "Kilobytes", "Megabytes", "Gigabytes"]
-            };
-        function unites(grandeur) {
-            const selectUniteDepart = document.querySelectorAll("select")[1];
-            const selectUniteArrivee = document.querySelectorAll("select")[2];
+        };
+
+        document.querySelector("select").addEventListener("change", function () {
+            const grandeur = this.value;
+            const selectUniteDepart = document.querySelector("#grandeur1");
+            const selectUniteArrivee = document.querySelector("#grandeur2");
+
+            selectUniteDepart.innerHTML = "";
+            selectUniteArrivee.innerHTML = "";
+
             unitesDisponibles[grandeur].forEach(unite => {
                 const optionDepart = document.createElement("option");
                 const optionArrivee = document.createElement("option");
-                
+
                 optionDepart.textContent = unite;
                 optionArrivee.textContent = unite;
-            
+
                 selectUniteDepart.appendChild(optionDepart);
                 selectUniteArrivee.appendChild(optionArrivee);
             });
-        }
+        });
+
+        document.querySelector("#button").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const grandeur = document.querySelector("select").value;
+            const uniteDepart = document.querySelector("#grandeur1").value;
+            const uniteArriver = document.querySelector("#grandeur2").value;
+            const valeur = parseFloat(document.querySelector(".container-saisie input").value);
+
+            if (!valeur || isNaN(valeur)) {
+                alert("Veuillez entrer une valeur valide.");
+                return;
+            }
+
+            try {
+                const resultat = conversion(grandeur, uniteDepart, uniteArriver, valeur);
+                document.querySelectorAll(".container-saisie input")[1].value = resultat;
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
         function conversion(grandeur, uniteDepart, uniteArriver, valeur) {
-            switch(grandeur) {
+            switch (grandeur) {
                 case "Température":
                     return conversionTemp(valeur, uniteDepart, uniteArriver);
                 case "Distance":
@@ -96,46 +124,101 @@
                     throw new Error("Grandeur non supportée.");
             }
         }
+
         function conversionTemp(valeur, uniteDepart, uniteArriver) {
-            if(uniteDepart === "Celsius" && uniteArriver === "Fahrenheit") {
-                return (valeur - 26)/2;
+            if (uniteDepart === "Celsius" && uniteArriver === "Fahrenheit") {
+                return (valeur * 9/5) + 32;
             } else if (uniteDepart === "Fahrenheit" && uniteArriver === "Celsius") {
-                return (valeur - 32)/1.8;
-            }  else if (uniteDepart === "Celsius" && uniteArriver === "Kelvin") {
-                return valeur + 273,15;
+                return (valeur - 32) * 5/9;
+            } else if (uniteDepart === "Celsius" && uniteArriver === "Kelvin") {
+                return valeur + 273.15;
             } else if (uniteDepart === "Kelvin" && uniteArriver === "Celsius") {
-                return valeur - 273,15;
+                return valeur - 273.15;
             } else if (uniteDepart === "Fahrenheit" && uniteArriver === "Kelvin") {
-                return (valeur - 32) * 5/9 + 273,15;
+                return (valeur - 32) * 5/9 + 273.15;
             } else if (uniteDepart === "Kelvin" && uniteArriver === "Fahrenheit") {
                 return (valeur - 273.15) * 9/5 + 32;
+            } else {
+                return valeur; 
+            }
+        }
+
+        function conversionDist(valeur, uniteDepart, uniteArriver) {
+            const mesures = {
+                "Kilomètres": 1000,
+                "Mètres": 1,
+                "Centimètres": 0.01,
+                "Millimètres": 0.001,
+                "Micromètres": 0.000001,
+                "Nanomètres": 0.000000001,
+                "Miles": 1609.34,
+                "Pieds": 0.3048,
+                "Pouces": 0.0254
+            };
+
+            if (mesures[uniteDepart] && mesures[uniteArriver]) {
+                return (valeur * mesures[uniteDepart]) / mesures[uniteArriver];
             } else {
                 throw new Error("Conversion non supportée entre ces unités.");
             }
         }
-        function conversionDist(valeur, uniteDepart, uniteArriver) {
-            const mesures = {
-                "Kilomètres": 1000,          
-                "Mètres": 1,                
-                "Centimètres": 0.01,         
-                "Millimètres": 0.001,      
-                "Micromètres": 0.000001,    
-                "Nanomètres": 0.000000001,   
-                "Miles": 1609.34,           
-                "Pieds": 0.3048,             
-                "Pouces": 0.0254             
-            }
-            for (const mesure in mesures) {
-                if(uniteArriver === mesure) {
-                    return valeur * mesures[mesure];
-                } else {
-                    throw new Error("Erreur dans la conversion");
-                }      
+
+        function conversionVol(valeur, uniteDepart, uniteArriver) {
+            const volumes = {
+                "Litres": 1,
+                "Millilitres": 0.001,
+                "Gallons": 3.78541
+            };
+
+            if (volumes[uniteDepart] && volumes[uniteArriver]) {
+                return (valeur * volumes[uniteDepart]) / volumes[uniteArriver];
+            } else {
+                throw new Error("Conversion non supportée entre ces unités.");
             }
         }
-        
-      
+
+        function conversionMasse(valeur, uniteDepart, uniteArriver) {
+            const masses = {
+                "Grammes": 1,
+                "Kilogrammes": 1000,
+                "Livres": 453.592
+            };
+
+            if (masses[uniteDepart] && masses[uniteArriver]) {
+                return (valeur * masses[uniteDepart]) / masses[uniteArriver];
+            } else {
+                throw new Error("Conversion non supportée entre ces unités.");
+            }
+        }
+
+        function conversionTemps(valeur, uniteDepart, uniteArriver) {
+            const temps = {
+                "Secondes": 1,
+                "Minutes": 60,
+                "Heures": 3600
+            };
+
+            if (temps[uniteDepart] && temps[uniteArriver]) {
+                return (valeur * temps[uniteDepart]) / temps[uniteArriver];
+            } else {
+                throw new Error("Conversion non supportée entre ces unités.");
+            }
+        }
+
+        function conversionData(valeur, uniteDepart, uniteArriver) {
+            const data = {
+                "Bytes": 1,
+                "Kilobytes": 1024,
+                "Megabytes": 1048576,
+                "Gigabytes": 1073741824
+            };
+
+            if (data[uniteDepart] && data[uniteArriver]) {
+                return (valeur * data[uniteDepart]) / data[uniteArriver];
+            } else {
+                throw new Error("Conversion non supportée entre ces unités.");
+            }
+        }
     </script>
 </body>
 </html>
-
